@@ -1,0 +1,68 @@
+{% include 'header.html' %} 
+<div class="pageelement">
+{% with messages = get_flashed_messages(category_filter="error") %}
+  {% if messages %}
+  
+  <div class="container-fluid">
+    <div class="alert alert-warning" role="alert">
+    {% for  message in messages %}
+      {{ message }}<br>
+    {% endfor %}
+    </div>
+  </div>
+
+  {% endif %}
+{% endwith %}
+  <div class="row">
+    <div class="form-group row">
+        <label for="symbol" class="col-sm-1 col-form-label d-flex justify-content-end align-items-end">Stock Symbol</label>
+        <div class="col-sm-1">
+          <input type="text" class="form-control" id="symbol" placeholder="symbol" value="{{ page_data['inputValue']}}">
+        </div>
+         <div class="col-sm-1">
+          <button id="retrieve" class="btn btn-primary">Retrieve</button>
+        </div>
+      </div>
+  </div>
+  {% if stock_data %}
+  <div class="stock-info">
+    <h2>Company: {{ stock_data.Name }}</h2>
+    <p>Stock Symbol: {{ stock_data.Symbol }}</p>
+    <p>Company Name: {{ stock_data.Name }}</p>
+    <p>Sector: {{ stock_data.Sector }}</p>
+    <p>Industry: {{ stock_data.Industry }}</p>
+    <p>Market Capitalization: {{ stock_data.MarketCapitalization }}</p>
+    <p>Price to Earnings Ratio: {{ stock_data.PERatio }}</p>
+    <p>Earnings per Share: {{ stock_data.EPS }}</p>
+    <p>Dividend and Yield: {{ stock_data.DividendYield }}</p>
+    <p>Stock Exchange: {{ stock_data.Exchange }}</p>
+    <p>Current Price: {{ stock_data['most_recent_close'] }}</p>
+    <p>Previous Close: {{ stock_data['previous_close'] }}</p>
+    <p>Open: {{ stock_data['most_recent_open'] }}</p>
+    <p>Volume: {{ stock_data['most_recent_volume'] }}</p>
+    <p>52-Week High: {{ stock_data['52WeekHigh'] }}</p>
+    <p>52-Week Low: {{ stock_data['52WeekLow'] }}</p>
+  </div>
+  <div class="news-section">
+    <h3>Latest News</h3>
+    {% for article in news_articles %}
+      <p><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></p>
+    {% endfor %}
+  
+
+  </div>
+  <!-- Chart Container -->
+  <div id="myChart"></div>
+{% endif %}
+
+  {% if symbol is defined %}
+  <input type="hidden" id="submittedSymbol" name="submittedSymbol" value="{{symbol}}">
+  <div id="myChart">
+  </div>
+  {% endif %}
+
+</div>
+<!-- needs to occur before loading the footer as the footer closes off the html page -->
+<script src="{{url_for('static', filename='includes/stock.js')}}"></script>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
+{% include 'footer.html' %}
